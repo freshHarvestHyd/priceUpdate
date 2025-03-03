@@ -23,7 +23,7 @@ class FruitPriceForm(forms.Form):
     # Fields for default fruits
     for fruit in FRUIT_NAMES:
         locals()[f'price_{fruit.lower().replace(" ", "_")}'] = forms.DecimalField(
-            max_digits=7,  # Increased to 7 digits
+            max_digits=7,
             decimal_places=2,
             required=False,
             label=f'Price for {fruit}'
@@ -45,7 +45,7 @@ class FruitPriceForm(forms.Form):
         label='Other Fruit Name'
     )
     custom_price = forms.DecimalField(
-        max_digits=7,  # Increased to 7 digits
+        max_digits=7,
         decimal_places=2,
         required=False,
         label='Price for Other Fruit'

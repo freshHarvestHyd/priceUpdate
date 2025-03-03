@@ -62,9 +62,7 @@ def add_price(request):
     })
 
 def export_pdf(request):
-    # Convert filter_date string to date object
-    filter_date_str = request.GET.get('filter_date', str(date.today()))
-    filter_date = datetime.strptime(filter_date_str, '%Y-%m-%d').date() if filter_date_str else date.today()
+    filter_date = request.GET.get('filter_date', str(date.today()))
     prices = FruitPrice.objects.filter(date=filter_date)
 
     response = HttpResponse(content_type='application/pdf')
@@ -93,25 +91,25 @@ def export_pdf(request):
 
     # Table Headers with Background
     y = 650
-    p.setFillColorRGB(0.28, 0.67, 0.31)  # Green background
-    p.rect(50, y-10, 470, 20, fill=1, stroke=1)  # Adjusted width, added stroke
-    p.setFillColorRGB(1, 1, 1)  # White text
+    p.setFillColorRGB(0.28, 0.67, 0.31)
+    p.rect(50, y-10, 470, 20, fill=1, stroke=1)
+    p.setFillColorRGB(1, 1, 1)
     p.setFont("Helvetica-Bold", 12)
-    p.drawString(60, y-2, "Date")  # Adjusted x for alignment
-    p.drawString(130, y-2, "Fruit Name")  # Adjusted x
-    p.drawString(250, y-2, "Price (Rs)")  # Adjusted x
-    p.drawString(350, y-2, "Unit")  # Adjusted x
-    p.setFillColorRGB(0, 0, 0)  # Black text for data
+    p.drawString(60, y-2, "Date")
+    p.drawString(130, y-2, "Fruit Name")
+    p.drawString(250, y-2, "Price (Rs)")
+    p.drawString(350, y-2, "Unit")
+    p.setFillColorRGB(0, 0, 0)
 
     # Table Data with Borders
-    y -= 18
+    y -= 17
     p.setFont("Helvetica", 10)
     for price in prices:
-        p.rect(50, y-7, 470, 15, fill=0, stroke=1)  # Adjusted width
-        p.drawString(60, y-2, date_format(price.date, 'd-m-Y'))  # Aligned
-        p.drawString(130, y-2, price.fruit_name)  # Aligned
-        p.drawString(250, y-2, f"Rs {price.price}")  # Aligned
-        p.drawString(350, y-2, price.unit)  # Aligned
+        p.rect(50, y-7, 470, 15, fill=0, stroke=1)
+        p.drawString(60, y-2, date_format(price.date, 'd-m-Y'))
+        p.drawString(130, y-2, price.fruit_name)
+        p.drawString(250, y-2, f"Rs {price.price}")
+        p.drawString(350, y-2, price.unit)
         y -= 15
         if y < 50:
             p.showPage()
