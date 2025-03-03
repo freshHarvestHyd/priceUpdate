@@ -10,16 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 from dotenv import load_dotenv
-import os
 import dj_database_url
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from .env file
 load_dotenv()
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Security and hosting settings
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-st)y)+$+3$&s5u8!-ue^^r80(h10gak$@_(ge#-r2ntje*%fz$')  # Fallback for local dev
@@ -69,7 +69,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL', 'postgres://postgres:freshharvest123@localhost:5432/fresh_harvest'))  # Local fallback
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL', 'postgres://postgres:freshharvest123@localhost:5432/fresh_harvest'))
 }
 
 # Password validation
