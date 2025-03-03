@@ -8,7 +8,7 @@ class FruitPrice(models.Model):
     ]
     date = models.DateField()
     fruit_name = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=7, decimal_places=2)  # Increased to 7 digits
+    price = models.DecimalField(max_digits=7, decimal_places=2)
     unit = models.CharField(max_length=6, choices=UNIT_CHOICES, default='kg')
 
     def __str__(self):
