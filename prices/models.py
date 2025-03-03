@@ -2,17 +2,17 @@ from django.db import models
 
 class FruitPrice(models.Model):
     UNIT_CHOICES = [
-        ('kgs', 'Kilograms'),
-        ('units', 'Units'),
-        ('dozens', 'Dozens'),
+        ('kg', 'Kg'),
+        ('box', 'Box'),
+        ('piece', 'Piece'),
     ]
     date = models.DateField()
     fruit_name = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
-    unit = models.CharField(max_length=6, choices=UNIT_CHOICES, default='kgs')
+    price = models.DecimalField(max_digits=7, decimal_places=2)  # Increased to 7 digits
+    unit = models.CharField(max_length=6, choices=UNIT_CHOICES, default='kg')
 
     def __str__(self):
         return f"{self.fruit_name} - {self.date} ({self.unit})"
 
     class Meta:
-        unique_together = ('date', 'fruit_name')  # Ensures uniqueness
+        unique_together = ('date', 'fruit_name')

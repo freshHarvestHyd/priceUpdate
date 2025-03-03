@@ -23,38 +23,38 @@ class FruitPriceForm(forms.Form):
     # Fields for default fruits
     for fruit in FRUIT_NAMES:
         locals()[f'price_{fruit.lower().replace(" ", "_")}'] = forms.DecimalField(
-            max_digits=5,
+            max_digits=7,  # Increased to 7 digits
             decimal_places=2,
             required=False,
             label=f'Price for {fruit}'
         )
         locals()[f'unit_{fruit.lower().replace(" ", "_")}'] = forms.ChoiceField(
             choices=[
-                ('kgs', 'Kilograms'),
-                ('units', 'Units'),
-                ('dozens', 'Dozens'),
+                ('kg', 'Kg'),
+                ('box', 'Box'),
+                ('piece', 'Piece'),
             ],
             required=False,
             label=f'Unit for {fruit}'
         )
 
-    # Single custom fruit field (for reference, we'll handle multiples in template/view)
+    # Fields for custom fruit
     custom_fruit_name = forms.CharField(
         max_length=100,
         required=False,
         label='Other Fruit Name'
     )
     custom_price = forms.DecimalField(
-        max_digits=5,
+        max_digits=7,  # Increased to 7 digits
         decimal_places=2,
         required=False,
         label='Price for Other Fruit'
     )
     custom_unit = forms.ChoiceField(
         choices=[
-            ('kgs', 'Kilograms'),
-            ('units', 'Units'),
-            ('dozens', 'Dozens'),
+            ('kg', 'Kg'),
+            ('box', 'Box'),
+            ('piece', 'Piece'),
         ],
         required=False,
         label='Unit for Other Fruit'
