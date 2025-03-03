@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fresh Harvest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        .fruit-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            width: 150px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        button, .pdf-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+        }
+        button:hover, .pdf-button:hover {
+            background-color: #45a049;
+        }
+        .clear-button {
+            background-color: #f44336;
+        }
+        .clear-button:hover {
+            background-color: #d32f2f;
+        }
+        .add-button {
+            background-color: #2196F3;
+            padding: 5px 10px;
+        }
+        .add-button:hover {
+            background-color: #1976D2;
+        }
+        .message {
+            color: green;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .filter-form {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .custom-section {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+    <script>
+        function addCustomFruit() {
+            const container = document.getElementById('custom-fruits');
+            const newRow = document.createElement('div');
+            newRow.className = 'fruit-row';
+            newRow.innerHTML = `
+                <label for="custom_fruit_name">Fruit Name:</label>
+                <input type="text" name="custom_fruit_name[]" required>
+                <input type="number" step="0.01" name="custom_price[]" placeholder="Price" required>
+                <select name="custom_unit[]" required>
+                    <option value="">Select Unit</option>
+                    <option value="kgs">Kilograms</option>
+                    <option value="units">Units</option>
+                    <option value="dozens">Dozens</option>
+                </select>
+            `;
+            container.appendChild(newRow);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Fresh Harvest - Fruit Prices</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="fruit-row">
+                <label for="id_date">Date:</label>
+                {{ form.date }}
+            </div>
+            {% for fruit in form.FRUIT_NAMES %}
+                <div class="fruit-row">
+                    <label>{{ fruit }}:</label>
+                    <input type="number" step="0.01" name="price_{{ fruit|lower|slugify }}" placeholder="Price">
+                    <select name="unit_{{ fruit|lower|slugify }}">
+                        <option value="">Select Unit</option>
+                        <option value="kgs">Kilograms</option>
+                        <option value="units">Units</option>
+                        <option value="dozens">Dozens</option>
+                    </select>
+                </div>
+            {% endfor %}
+            <div class="custom-section">
+                <h2>Add Other Fruit</h2>
+                <div id="custom-fruits">
+                    <div class="fruit-row">
+                        <label for="id_custom_fruit_name">Fruit Name:</label>
+                        {{ form.custom_fruit_name }}
+                        {{ form.custom_price }}
+                        {{ form.custom_unit }}
+                    </div>
+                </div>
+                <button type="button" class="add-button" onclick="addCustomFruit()">+</button>
+            </div>
+            <button type="submit">Add Prices</button>
+        </form>
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+        <a href="/export-pdf/?filter_date={{ filter_date }}" class="pdf-button">Download PDF</a>
+
+        <div class="filter-form">
+            <form method="get">
+                <label for="filter_date">Filter by Date:</label>
+                <input type="date" id="filter_date" name="filter_date" value="{{ filter_date|default_if_none:today|date:'d-m-Y' }}">
+                <button type="submit">Filter</button>
+                <a href="/" class="clear-button">Clear Filter</a>
+            </form>
+        </div>
+
+        {% if prices %}
+            <h2>Price List {% if filter_date %}for {{ filter_date|date:'d-m-Y' }}{% endif %}</h2>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Fruit Name</th>
+                    <th>Price (Rs)</th>
+                    <th>Unit</th>
+                </tr>
+                {% for price in prices %}
+                    <tr>
+                        <td>{{ price.date|date:'d-m-Y' }}</td>
+                        <td>{{ price.fruit_name }}</td>
+                        <td>Rs {{ price.price }}</td>
+                        <td>{{ price.unit }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No prices found for {% if filter_date %}{{ filter_date|date:'d-m-Y' }}{% else %}today{% endif %}.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
